@@ -9,12 +9,12 @@ from boid import Boid
 def redrawGameWindow(win,  boids):
     # win.blit(bg, (0, 0))
     win.fill((0, 0, 0))
-    
+
     coords = get_coords(boids)
     vels = get_vels(boids)
 
     for i in range(len(boids)):
-        boids[i].move_boid(coords,vels, win)
+        boids[i].move_boid(coords, vels, win)
 
     pygame.display.update()
 
@@ -37,22 +37,25 @@ def get_vels(boids):
 
 # %%
 def main():
-    WIDTH, HEIGHT = 750,750
+    WIDTH, HEIGHT = 750, 750
     boids = []
     for i in range(100):
         boids.append(Boid(i, WIDTH, HEIGHT))
+    # give them groups and colors
 
     clock = pygame.time.Clock()
     pygame.init()
 
     win = pygame.display.set_mode((WIDTH, HEIGHT))
+    # TODO: variable screen size
 
     pygame.display.set_caption("First Game")
+    # TODO: GUI with sliders
 
     # Mainloop
     run = True
     while run:
-        clock.tick(30)
+        clock.tick(60)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -67,10 +70,10 @@ def main():
         # elif keys[pygame.K_RIGHT] and boid.x < 500 - boid.radius*2 - boid.vel_x:
         #     boid.x += boid.vel_x
 
-
-        redrawGameWindow(win,boids)
+        redrawGameWindow(win, boids)
 
     pygame.quit()
+
 
 # %%
 if __name__ == "__main__":

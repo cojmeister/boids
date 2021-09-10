@@ -6,6 +6,7 @@ import pygame
 
 class Boid():
     def __init__(self, id=None, max_x=None, max_y=None):
+        # TODO: add third dimension, radius is function of distance from camera?
         self.radius = 15
         if id is not None:
             self.id = id
@@ -103,6 +104,10 @@ class Boid():
             vel_y = -10
         return np.array([vel_x, vel_y])
 
+    # TODO: add more rules:
+        # away from mouse, to mouse if clicked
+        # perching
+
     def move_boid(self, coords, vels, win):
         vel = np.vstack([self.rule1(coords, factor=0.1),
                          self.rule2(coords, r_clear=50),
@@ -118,6 +123,7 @@ class Boid():
         return self.draw(win)
 
     def scatter(self):
+        # TODO: maybe improve, so it is more fluid
         self.pos = self.x, self.y, = np.random.randint(
             2*self.radius, self.max_x), np.random.randint(2*self.radius, self.max_y)
 
