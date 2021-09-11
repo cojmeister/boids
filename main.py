@@ -1,8 +1,9 @@
 # %%
 import numpy as np
-import pygame
-from pygame.locals import *
+import pygame as py
+
 from boid import Boid
+
 # %%
 
 
@@ -11,18 +12,19 @@ def redrawGameWindow(win,  arrray_of_boids, wind, scatter=False):
     win.fill((0, 0, 0))
     weights = np.ones(7)  # !
 
-    weights_dict = {'rule1':0, 'rule2':1, 'rule3':2, 'wind':3, 'mouse':4,'limit_vel': 5}
+    weights_dict = {'rule1': 0, 'rule2': 1, 'rule3': 2,
+                    'wind': 3, 'mouse': 4, 'limit_vel': 5}
 
-    weights[weights_dict['rule1']]= 0.35
+    weights[weights_dict['rule1']] = 0.35
     weights[weights_dict['wind']] = 0.1
-    if pygame.mouse.get_pressed()[0]:
+    if py.mouse.get_pressed()[0]:
         weights[weights_dict['mouse']] = -0.05
-    elif pygame.mouse.get_pressed()[-1]:
+    elif py.mouse.get_pressed()[-1]:
         weights[weights_dict['mouse']] = 0.2
     else:
         weights[weights_dict['mouse']] = 0
 
-    mouse = np.array(pygame.mouse.get_pos())
+    mouse = np.array(py.mouse.get_pos())
 
     if not scatter:
         for boids in arrray_of_boids:
@@ -38,7 +40,7 @@ def redrawGameWindow(win,  arrray_of_boids, wind, scatter=False):
                 weights[weights_dict['rule1']] = -1
                 boid.move_boid(coords, vels, win, wind, mouse, weights)
 
-    pygame.display.update()
+    py.display.update()
 
 
 def get_coords(boids):
@@ -70,13 +72,13 @@ def main():
     for i in range(30):
         boids3.append(Boid(i, WIDTH, HEIGHT, [0, 0, 255]))
 
-    clock = pygame.time.Clock()
-    pygame.init()
+    clock = py.time.Clock()
+    py.init()
 
-    win = pygame.display.set_mode((WIDTH, HEIGHT))
+    win = py.display.set_mode((WIDTH, HEIGHT))
     # TODO: variable screen size
 
-    pygame.display.set_caption("First Game")
+    py.display.set_caption("First Game")
     # TODO: GUI with sliders
 
     wind = np.zeros([1, 2])
@@ -85,39 +87,38 @@ def main():
     while run:
         clock.tick(30)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in py.event.get():
+            if event.type == py.QUIT:
                 run = False
 
-        keys = pygame.key.get_pressed()
+        keys = py.key.get_pressed()
 
-        if keys[pygame.K_LEFT]:
-            if wind[0,0]>-0.8:
-                wind[0,0] -= 0.5
-        elif keys[pygame.K_RIGHT]:
-            if wind[0,0]<0.8:
-                wind[0,0] += 0.5
+        if keys[py.K_LEFT]:
+            if wind[0, 0] > -0.8:
+                wind[0, 0] -= 0.5
+        elif keys[py.K_RIGHT]:
+            if wind[0, 0] < 0.8:
+                wind[0, 0] += 0.5
 
-        if keys[pygame.K_UP]:
-            if wind[0,1]>-0.8:
-                wind[0,1] -= 0.5
-        elif keys[pygame.K_DOWN]:
-            if wind[0,1]<0.8:
-                wind[0,1] += 0.5
+        if keys[py.K_UP]:
+            if wind[0, 1] > -0.8:
+                wind[0, 1] -= 0.5
+        elif keys[py.K_DOWN]:
+            if wind[0, 1] < 0.8:
+                wind[0, 1] += 0.5
 
-
-        if keys[pygame.K_SPACE]:  # spread
-            if keys[pygame.K_w]:
+        if keys[py.K_SPACE]:  # spread
+            if keys[py.K_w]:
                 wind = np.zeros([1, 2])
             redrawGameWindow(win, [boids1, boids2, boids3], wind, scatter=True)
-        elif keys[pygame.K_r]:  # reset
+        elif keys[py.K_r]:  # reset
             wind = np.zeros([1, 2])
             for boids in [boids1, boids2, boids3]:
                 for boid in boids:
                     boid.scatter()
         else:  # as normal
             redrawGameWindow(win, [boids1, boids2, boids3], wind)
-    pygame.quit()
+    py.quit()
 
 
 # %%
