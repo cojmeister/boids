@@ -22,11 +22,11 @@ class Boid():
             2*self.radius, self.max_x), np.random.randint(2*self.radius, self.max_y)
         self.group = 0
         self.vel = self.vel_x, self.vel_y = np.random.randint(
-            -5, 5), np.random.randint(-5, 5)
+            -2, 2), np.random.randint(-2, 2)
         self.color = color
 
     def make_coords(self):
-        alpha = np.pi/2  # self.get_alpha()
+        alpha = self.get_alpha()
         r = self.radius
         coords = np.array([[np.cos(alpha), np.sin(alpha)],
                            [np.cos(alpha+5*np.pi/6), np.sin(alpha+5*np.pi/6)],
@@ -38,18 +38,20 @@ class Boid():
         return coords
 
     def get_alpha(self):
-        if self.vel_y == 0:
-            if self.vel_x > 0:
+        epsi = 0.05
+        if -epsi < self.vel_y < epsi:
+            if self.vel_x > epsi:
                 return 0
             else:
                 return np.pi
-        elif self.vel_x == 0:
-            if self.vel_y > 0:
-                return np.pi/2
-            else:
+        elif -epsi<self.vel_x<epsi:
+            if self.vel_y > epsi:
                 return np.pi*3/2
-        else:
-            return np.arctan(self.vel_x/self.vel_y)
+            else:
+                return np.pi/2
+        # elif self.vel_x<0 and self.vel_y<0:
+        #     return np.arctan2(self.vel_x,self.vel_y)
+        return -np.pi/2-np.arctan2(self.vel_x,self.vel_y)
 
     def get_vel(self):
         return np.sqrt(np.mean(np.square(self.vel)))
@@ -93,6 +95,9 @@ class Boid():
             vel_y = self.vel_y / np.abs(self.vel_y) * vlim
         return np.array([vel_x, vel_y])
 
+    def tend_towards(self,  xy, factor=1):
+        return (xy-self.pos) * factor/100
+
     def limit_pos(self):
         vel_x, vel_y = 0, 0
         if self.x < self.radius:
@@ -117,18 +122,18 @@ class Boid():
         return np.array([self.x, self.y])
 
     # TODO: add more rules:
-        # away from mouse, to mouse if clicked
         # perching
 
-    def move_boid(self, coords, vels, window, wind=None, weights=None):
+    def move_boid(self, coords, vels, window, wind=None, mouse=None, weights=None):
         if wind is None:
-            wind = np.zeros([1,2])
-            
+            wind = np.zeros([1, 2])
+
         vel = np.vstack([self.rule1(coords, factor=0.1),
                          self.rule2(coords, r_clear=50),
                          self.rule3(vels,  factor=8),
                         #  self.limit_pos(),
                          wind,
+                         self.tend_towards(mouse),
                          self.limit_vel(100)
                          ])
         if weights is None:
@@ -146,6 +151,8 @@ class Boid():
         # TODO: maybe improve, so it is more fluid
         self.pos = self.x, self.y, = np.random.randint(
             2*self.radius, self.max_x), np.random.randint(2*self.radius, self.max_y)
+        self.vel = self.vel_x, self.vel_y = np.random.randint(
+            -2, 2), np.random.randint(-2, 2)
 
 
 # # %%
