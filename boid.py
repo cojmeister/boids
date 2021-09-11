@@ -5,7 +5,7 @@ import pygame
 
 
 class Boid():
-    def __init__(self, id=None, max_x=None, max_y=None):
+    def __init__(self, id=None, max_x=None, max_y=None, color=[255,0,0]):
         # TODO: add third dimension, radius is function of distance from camera?
         self.radius = 15
         if id is not None:
@@ -23,9 +23,11 @@ class Boid():
         self.group = 0
         self.vel = self.vel_x, self.vel_y = np.random.randint(
             -5, 5), np.random.randint(-5, 5)
+        self.color =  color
+
 
     def make_coords(self):
-        alpha = self.get_alpha()
+        alpha = np.pi/2#self.get_alpha()
         r = self.radius
         coords = np.array([[np.cos(alpha), np.sin(alpha)],
                            [np.cos(alpha+5*np.pi/6), np.sin(alpha+5*np.pi/6)],
@@ -55,7 +57,7 @@ class Boid():
 
     def draw(self, win):
         coords = self.make_coords()
-        return pygame.draw.polygon(win, [255, 0, 0], [tuple(coords[i, :]) for i in range(len(coords))])
+        return pygame.draw.polygon(win, self.color, [tuple(coords[i, :]) for i in range(len(coords))])
 
     def rule1(self, coords, factor=1):
         # boids go to center of mass of neighbours
@@ -84,6 +86,7 @@ class Boid():
         vel = (vels-vel)
         return vel * factor/100
 
+
     def limit_vel(self, vlim=50):
         vel_x, vel_y = 0, 0
         if np.abs(self.vel_x) > vlim:
@@ -104,19 +107,32 @@ class Boid():
             vel_y = -10
         return np.array([vel_x, vel_y])
 
+    def endless_frame(self):
+        if self.x < self.radius:
+            self.x = self.max_x
+        elif self.max_x < self.x:
+            self.x = self.radius
+        if self.y < self.radius:
+            self.y = self.max_y
+        elif self.max_y < self.y:
+            self.y = self.radius
+        return np.array([self.x,self.y])
+        
+
     # TODO: add more rules:
         # away from mouse, to mouse if clicked
         # perching
 
     def move_boid(self, coords, vels, win):
-        vel = np.vstack([self.rule1(coords, factor=0.1),
-                         self.rule2(coords, r_clear=50),
-                         self.rule3(vels,  factor=1),
-                         self.limit_pos(),
-                         self.limit_vel()
+        vel = np.vstack([0.5*self.rule1(coords, factor=0.1),
+                         2*self.rule2(coords, r_clear=50),
+                         self.rule3(vels,  factor=8),
+                        #  self.limit_pos(),
+                         self.limit_vel(100)
                          ]).sum(0)
         self.vel = vel+np.array(self.vel)
         self.vel_x, self.vel_y = self.vel
+        self.pos = self.endless_frame()
         self.x, self.y = self.vel + np.array(self.pos)
         self.pos = self.x, self.y
         # print(vel)

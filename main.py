@@ -6,15 +6,15 @@ from boid import Boid
 # %%
 
 
-def redrawGameWindow(win,  boids):
+def redrawGameWindow(win,  arrray_of_boids):
     # win.blit(bg, (0, 0))
     win.fill((0, 0, 0))
 
-    coords = get_coords(boids)
-    vels = get_vels(boids)
-
-    for i in range(len(boids)):
-        boids[i].move_boid(coords, vels, win)
+    for boids in arrray_of_boids:
+        coords = get_coords(boids)
+        vels = get_vels(boids)
+        for boid in boids:
+            boid.move_boid(coords, vels, win)
 
     pygame.display.update()
 
@@ -39,8 +39,14 @@ def get_vels(boids):
 def main():
     WIDTH, HEIGHT = 750, 750
     boids = []
-    for i in range(100):
+    for i in range(20):
         boids.append(Boid(i, WIDTH, HEIGHT))
+    boids2 = []
+    for i in range(10):
+        boids2.append(Boid(i, WIDTH, HEIGHT, [0, 255, 0]))
+    boids3 = []
+    for i in range(30):
+        boids2.append(Boid(i, WIDTH, HEIGHT, [0, 0, 255]))
     # give them groups and colors
 
     clock = pygame.time.Clock()
@@ -66,11 +72,15 @@ def main():
         if keys[pygame.K_SPACE]:
             for boid in boids:
                 boid.scatter()
+            for boid in boids2:
+                boid.scatter()
+            for boid in boids3:
+                boid.scatter()
 
         # elif keys[pygame.K_RIGHT] and boid.x < 500 - boid.radius*2 - boid.vel_x:
         #     boid.x += boid.vel_x
 
-        redrawGameWindow(win, boids)
+        redrawGameWindow(win, [boids, boids2, boids3])
 
     pygame.quit()
 
