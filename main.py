@@ -46,7 +46,7 @@ def main():
         boids2.append(Boid(i, WIDTH, HEIGHT, [0, 255, 0]))
     boids3 = []
     for i in range(30):
-        boids2.append(Boid(i, WIDTH, HEIGHT, [0, 0, 255]))
+        boids3.append(Boid(i, WIDTH, HEIGHT, [0, 0, 255]))
     # give them groups and colors
 
     clock = pygame.time.Clock()
