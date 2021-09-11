@@ -9,24 +9,33 @@ from boid import Boid
 def redrawGameWindow(win,  arrray_of_boids, wind, scatter=False):
     # win.blit(bg, (0, 0))
     win.fill((0, 0, 0))
-    weights = np.ones(5)  # !
+    weights = np.ones(6)  # !
 
-    weights_dict = {'rule1':0, 'rule2':1, 'rule3':2, 'wind':3, 'limit_vel': 4}
+    weights_dict = {'rule1':0, 'rule2':1, 'rule3':2, 'wind':3, 'mouse':4,'limit_vel': 5}
 
     weights[weights_dict['wind']] = 0.1
+    if pygame.mouse.get_pressed()[0]:
+        weights[weights_dict['mouse']] = -0.05
+    elif pygame.mouse.get_pressed()[-1]:
+        weights[weights_dict['mouse']] = 0.2
+    else:
+        weights[weights_dict['mouse']] = 0
+
+    mouse = np.array(pygame.mouse.get_pos())
+
     if not scatter:
         for boids in arrray_of_boids:
             coords = get_coords(boids)
             vels = get_vels(boids)
             for boid in boids:
-                boid.move_boid(coords, vels, win, wind, weights)
+                boid.move_boid(coords, vels, win, wind, mouse, weights)
     else:
         for boids in arrray_of_boids:
             coords = get_coords(boids)
             vels = get_vels(boids)
             for boid in boids:
                 weights[weights_dict['rule1']] = -1
-                boid.move_boid(coords, vels, win, wind, weights)
+                boid.move_boid(coords, vels, win, wind, mouse, weights)
 
     pygame.display.update()
 
@@ -109,7 +118,6 @@ def main():
         else:  # as normal
             redrawGameWindow(win, [boids1, boids2, boids3], wind)
 
-        print(wind)
         # elif keys[pygame.K_RIGHT] and boid.x < 500 - boid.radius*2 - boid.vel_x:
         #     boid.x += boid.vel_x
 
