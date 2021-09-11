@@ -9,10 +9,11 @@ from boid import Boid
 def redrawGameWindow(win,  arrray_of_boids, wind, scatter=False):
     # win.blit(bg, (0, 0))
     win.fill((0, 0, 0))
-    weights = np.ones(6)  # !
+    weights = np.ones(7)  # !
 
     weights_dict = {'rule1':0, 'rule2':1, 'rule3':2, 'wind':3, 'mouse':4,'limit_vel': 5}
 
+    weights[weights_dict['rule1']]= 0.35
     weights[weights_dict['wind']] = 0.1
     if pygame.mouse.get_pressed()[0]:
         weights[weights_dict['mouse']] = -0.05
@@ -58,17 +59,16 @@ def get_vels(boids):
 
 # %%
 def main():
-    WIDTH, HEIGHT = 750, 750
+    WIDTH, HEIGHT = 1080, 750
     boids1 = []
     for i in range(20):
         boids1.append(Boid(i, WIDTH, HEIGHT))
     boids2 = []
-    for i in range(10):
+    for i in range(100):
         boids2.append(Boid(i, WIDTH, HEIGHT, [0, 255, 0]))
     boids3 = []
     for i in range(30):
         boids3.append(Boid(i, WIDTH, HEIGHT, [0, 0, 255]))
-    # give them groups and colors
 
     clock = pygame.time.Clock()
     pygame.init()
@@ -79,11 +79,11 @@ def main():
     pygame.display.set_caption("First Game")
     # TODO: GUI with sliders
 
+    wind = np.zeros([1, 2])
     # Mainloop
     run = True
     while run:
-        clock.tick(60)
-        wind = np.zeros([1, 2])
+        clock.tick(30)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -117,10 +117,6 @@ def main():
                     boid.scatter()
         else:  # as normal
             redrawGameWindow(win, [boids1, boids2, boids3], wind)
-
-        # elif keys[pygame.K_RIGHT] and boid.x < 500 - boid.radius*2 - boid.vel_x:
-        #     boid.x += boid.vel_x
-
     pygame.quit()
 
 

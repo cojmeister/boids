@@ -38,20 +38,24 @@ class Boid():
         return coords
 
     def get_alpha(self):
-        epsi = 0.05
-        if -epsi < self.vel_y < epsi:
-            if self.vel_x > epsi:
-                return 0
-            else:
-                return np.pi
-        elif -epsi<self.vel_x<epsi:
-            if self.vel_y > epsi:
-                return np.pi*3/2
-            else:
-                return np.pi/2
-        # elif self.vel_x<0 and self.vel_y<0:
-        #     return np.arctan2(self.vel_x,self.vel_y)
-        return -np.pi/2-np.arctan2(self.vel_x,self.vel_y)
+        if pygame.mouse.get_pressed()[0]:
+            x = self.x-pygame.mouse.get_pos()[0]
+            y = self.y-pygame.mouse.get_pos()[1]
+            return -np.pi/2+np.arctan2(x,y)
+        # epsi = 0.05
+        # if -epsi < self.vel_y < epsi:
+        #     if self.vel_x > epsi:
+        #         return 0
+        #     else:
+        #         return np.pi
+        # elif -epsi<self.vel_x<epsi:
+        #     if self.vel_y > epsi:
+        #         return np.pi*3/2
+        #     else:
+        #         return np.pi/2
+        # # elif self.vel_x<0 and self.vel_y<0:
+        # #     return np.arctan2(self.vel_x,self.vel_y)
+        return np.arctan2(self.vel_x,self.vel_y)
 
     def get_vel(self):
         return np.sqrt(np.mean(np.square(self.vel)))
@@ -128,20 +132,20 @@ class Boid():
         if wind is None:
             wind = np.zeros([1, 2])
 
-        vel = np.vstack([self.rule1(coords, factor=0.1),
+        vel = np.vstack([self.rule1(coords, factor=1),
                          self.rule2(coords, r_clear=50),
                          self.rule3(vels,  factor=8),
-                        #  self.limit_pos(),
                          wind,
                          self.tend_towards(mouse),
-                         self.limit_vel(100)
+                         self.limit_vel(100),
+                         self.limit_pos()
                          ])
         if weights is None:
             weights = np.ones(len(vel))
         vel = weights.dot(vel)
         self.vel = vel+np.array(self.vel)
         self.vel_x, self.vel_y = self.vel
-        self.pos = self.endless_frame()
+        # self.pos = self.endless_frame()
         self.x, self.y = self.vel + np.array(self.pos)
         self.pos = self.x, self.y
         # print(vel)
@@ -153,25 +157,3 @@ class Boid():
             2*self.radius, self.max_x), np.random.randint(2*self.radius, self.max_y)
         self.vel = self.vel_x, self.vel_y = np.random.randint(
             -2, 2), np.random.randint(-2, 2)
-
-
-# # %%
-# b = Boid(0)
-# # %%
-# boids
-# # %%
-# coords = get_coords(boids)
-# vels = get_vels(boids)
-# # %%
-# vel = np.vstack([
-#     b.rule1(coords),
-#     b.rule2(coords),
-#     b.rule3(vels),
-#     b.limit_vel()
-# ])
-# # %%
-# vel
-# # %%
-# weights = np.ones(len(vel))
-# weights.dot(vel)
-# # %%
