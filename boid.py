@@ -54,9 +54,9 @@ class Boid():
     def get_vel(self):
         return np.sqrt(np.mean(np.square(self.vel)))
 
-    def draw(self, win):
+    def draw(self, window):
         coords = self.make_coords()
-        return pygame.draw.polygon(win, self.color, [tuple(coords[i, :]) for i in range(len(coords))])
+        return pygame.draw.polygon(window, self.color, [tuple(coords[i, :]) for i in range(len(coords))])
 
     def rule1(self, coords, factor=1):
         # boids go to center of mass of neighbours
@@ -120,11 +120,15 @@ class Boid():
         # away from mouse, to mouse if clicked
         # perching
 
-    def move_boid(self, coords, vels, win, weights=None):
+    def move_boid(self, coords, vels, window, wind=None, weights=None):
+        if wind is None:
+            wind = np.zeros([1,2])
+            
         vel = np.vstack([self.rule1(coords, factor=0.1),
                          self.rule2(coords, r_clear=50),
                          self.rule3(vels,  factor=8),
                         #  self.limit_pos(),
+                         wind,
                          self.limit_vel(100)
                          ])
         if weights is None:
@@ -136,7 +140,7 @@ class Boid():
         self.x, self.y = self.vel + np.array(self.pos)
         self.pos = self.x, self.y
         # print(vel)
-        return self.draw(win)
+        return self.draw(window)
 
     def scatter(self):
         # TODO: maybe improve, so it is more fluid
