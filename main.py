@@ -6,15 +6,25 @@ from boid import Boid
 # %%
 
 
-def redrawGameWindow(win,  arrray_of_boids):
+def redrawGameWindow(win,  arrray_of_boids, scatter=False):
     # win.blit(bg, (0, 0))
     win.fill((0, 0, 0))
 
-    for boids in arrray_of_boids:
-        coords = get_coords(boids)
-        vels = get_vels(boids)
-        for boid in boids:
-            boid.move_boid(coords, vels, win)
+    if not scatter:
+        for boids in arrray_of_boids:
+            coords = get_coords(boids)
+            vels = get_vels(boids)
+            for boid in boids:
+                boid.move_boid(coords, vels, win)
+    else:
+        for boids in arrray_of_boids:
+            coords = get_coords(boids)
+            vels = get_vels(boids)
+            for boid in boids:
+                weights = np.ones(4) #!
+                weights[0] = -1
+                boid.move_boid(coords, vels, win, weights)
+
 
     pygame.display.update()
 
@@ -38,9 +48,9 @@ def get_vels(boids):
 # %%
 def main():
     WIDTH, HEIGHT = 750, 750
-    boids = []
+    boids1 = []
     for i in range(20):
-        boids.append(Boid(i, WIDTH, HEIGHT))
+        boids1.append(Boid(i, WIDTH, HEIGHT))
     boids2 = []
     for i in range(10):
         boids2.append(Boid(i, WIDTH, HEIGHT, [0, 255, 0]))
@@ -70,17 +80,17 @@ def main():
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_SPACE]:
-            for boid in boids:
-                boid.scatter()
-            for boid in boids2:
-                boid.scatter()
-            for boid in boids3:
-                boid.scatter()
+            redrawGameWindow(win,[boids1, boids2, boids3],scatter=True)
+        elif keys[pygame.K_r]:
+            for boids in [boids1, boids2, boids3]:
+                for boid in boids:
+                    boid.scatter()
+        else:
+            redrawGameWindow(win, [boids1, boids2, boids3])
 
         # elif keys[pygame.K_RIGHT] and boid.x < 500 - boid.radius*2 - boid.vel_x:
         #     boid.x += boid.vel_x
 
-        redrawGameWindow(win, [boids, boids2, boids3])
 
     pygame.quit()
 

@@ -5,7 +5,7 @@ import pygame
 
 
 class Boid():
-    def __init__(self, id=None, max_x=None, max_y=None, color=[255,0,0]):
+    def __init__(self, id=None, max_x=None, max_y=None, color=[255, 0, 0]):
         # TODO: add third dimension, radius is function of distance from camera?
         self.radius = 15
         if id is not None:
@@ -23,11 +23,10 @@ class Boid():
         self.group = 0
         self.vel = self.vel_x, self.vel_y = np.random.randint(
             -5, 5), np.random.randint(-5, 5)
-        self.color =  color
-
+        self.color = color
 
     def make_coords(self):
-        alpha = np.pi/2#self.get_alpha()
+        alpha = np.pi/2  # self.get_alpha()
         r = self.radius
         coords = np.array([[np.cos(alpha), np.sin(alpha)],
                            [np.cos(alpha+5*np.pi/6), np.sin(alpha+5*np.pi/6)],
@@ -86,7 +85,6 @@ class Boid():
         vel = (vels-vel)
         return vel * factor/100
 
-
     def limit_vel(self, vlim=50):
         vel_x, vel_y = 0, 0
         if np.abs(self.vel_x) > vlim:
@@ -116,20 +114,22 @@ class Boid():
             self.y = self.max_y
         elif self.max_y < self.y:
             self.y = self.radius
-        return np.array([self.x,self.y])
-        
+        return np.array([self.x, self.y])
 
     # TODO: add more rules:
         # away from mouse, to mouse if clicked
         # perching
 
-    def move_boid(self, coords, vels, win):
-        vel = np.vstack([0.5*self.rule1(coords, factor=0.1),
-                         2*self.rule2(coords, r_clear=50),
+    def move_boid(self, coords, vels, win, weights=None):
+        vel = np.vstack([self.rule1(coords, factor=0.1),
+                         self.rule2(coords, r_clear=50),
                          self.rule3(vels,  factor=8),
                         #  self.limit_pos(),
                          self.limit_vel(100)
-                         ]).sum(0)
+                         ])
+        if weights is None:
+            weights = np.ones(len(vel))
+        vel = weights.dot(vel)
         self.vel = vel+np.array(self.vel)
         self.vel_x, self.vel_y = self.vel
         self.pos = self.endless_frame()
@@ -143,4 +143,24 @@ class Boid():
         self.pos = self.x, self.y, = np.random.randint(
             2*self.radius, self.max_x), np.random.randint(2*self.radius, self.max_y)
 
-# %%
+
+# # %%
+# b = Boid(0)
+# # %%
+# boids
+# # %%
+# coords = get_coords(boids)
+# vels = get_vels(boids)
+# # %%
+# vel = np.vstack([
+#     b.rule1(coords),
+#     b.rule2(coords),
+#     b.rule3(vels),
+#     b.limit_vel()
+# ])
+# # %%
+# vel
+# # %%
+# weights = np.ones(len(vel))
+# weights.dot(vel)
+# # %%
