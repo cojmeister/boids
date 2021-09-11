@@ -6,25 +6,27 @@ from boid import Boid
 # %%
 
 
-def redrawGameWindow(win,  arrray_of_boids, scatter=False):
+def redrawGameWindow(win,  arrray_of_boids, wind, scatter=False):
     # win.blit(bg, (0, 0))
     win.fill((0, 0, 0))
+    weights = np.ones(5)  # !
 
+    weights_dict = {'rule1':0, 'rule2':1, 'rule3':2, 'wind':3, 'limit_vel': 4}
+
+    weights[weights_dict['wind']] = 0.1
     if not scatter:
         for boids in arrray_of_boids:
             coords = get_coords(boids)
             vels = get_vels(boids)
             for boid in boids:
-                boid.move_boid(coords, vels, win)
+                boid.move_boid(coords, vels, win, wind, weights)
     else:
         for boids in arrray_of_boids:
             coords = get_coords(boids)
             vels = get_vels(boids)
             for boid in boids:
-                weights = np.ones(4) #!
-                weights[0] = -1
-                boid.move_boid(coords, vels, win, weights)
-
+                weights[weights_dict['rule1']] = -1
+                boid.move_boid(coords, vels, win, wind, weights)
 
     pygame.display.update()
 
@@ -72,6 +74,7 @@ def main():
     run = True
     while run:
         clock.tick(60)
+        wind = np.zeros([1, 2])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -79,18 +82,36 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_SPACE]:
-            redrawGameWindow(win,[boids1, boids2, boids3],scatter=True)
-        elif keys[pygame.K_r]:
+        if keys[pygame.K_LEFT]:
+            if wind[0,0]>-0.8:
+                wind[0,0] -= 0.5
+        elif keys[pygame.K_RIGHT]:
+            if wind[0,0]<0.8:
+                wind[0,0] += 0.5
+
+        if keys[pygame.K_UP]:
+            if wind[0,1]>-0.8:
+                wind[0,1] -= 0.5
+        elif keys[pygame.K_DOWN]:
+            if wind[0,1]<0.8:
+                wind[0,1] += 0.5
+
+
+        if keys[pygame.K_SPACE]:  # spread
+            if keys[pygame.K_w]:
+                wind = np.zeros([1, 2])
+            redrawGameWindow(win, [boids1, boids2, boids3], wind, scatter=True)
+        elif keys[pygame.K_r]:  # reset
+            wind = np.zeros([1, 2])
             for boids in [boids1, boids2, boids3]:
                 for boid in boids:
                     boid.scatter()
-        else:
-            redrawGameWindow(win, [boids1, boids2, boids3])
+        else:  # as normal
+            redrawGameWindow(win, [boids1, boids2, boids3], wind)
 
+        print(wind)
         # elif keys[pygame.K_RIGHT] and boid.x < 500 - boid.radius*2 - boid.vel_x:
         #     boid.x += boid.vel_x
-
 
     pygame.quit()
 
