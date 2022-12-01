@@ -91,33 +91,33 @@ def main():
             if event.type == py.QUIT:
                 run = False
 
-        keys = py.key.get_pressed()
-
-        if keys[py.K_LEFT]:
-            if wind[0, 0] > -0.8:
-                wind[0, 0] -= 0.5
-        elif keys[py.K_RIGHT]:
-            if wind[0, 0] < 0.8:
-                wind[0, 0] += 0.5
-
-        if keys[py.K_UP]:
-            if wind[0, 1] > -0.8:
-                wind[0, 1] -= 0.5
-        elif keys[py.K_DOWN]:
-            if wind[0, 1] < 0.8:
-                wind[0, 1] += 0.5
-
-        if keys[py.K_SPACE]:  # spread
-            if keys[py.K_w]:
-                wind = np.zeros([1, 2])
-            redrawGameWindow(win, [boids1, boids2, boids3], wind, scatter=True)
-        elif keys[py.K_r]:  # reset
-            wind = np.zeros([1, 2])
-            for boids in [boids1, boids2, boids3]:
-                for boid in boids:
-                    boid.scatter()
-        else:  # as normal
-            redrawGameWindow(win, [boids1, boids2, boids3], wind)
+        # keys = py.key.get_pressed()
+        #
+        # if keys[py.K_LEFT]:
+        #     if wind[0, 0] > -0.8:
+        #         wind[0, 0] -= 0.5
+        # elif keys[py.K_RIGHT]:
+        #     if wind[0, 0] < 0.8:
+        #         wind[0, 0] += 0.5
+        #
+        # if keys[py.K_UP]:
+        #     if wind[0, 1] > -0.8:
+        #         wind[0, 1] -= 0.5
+        # elif keys[py.K_DOWN]:
+        #     if wind[0, 1] < 0.8:
+        #         wind[0, 1] += 0.5
+        #
+        # if keys[py.K_SPACE]:  # spread
+        #     if keys[py.K_w]:
+        #         wind = np.zeros([1, 2])
+        #     redrawGameWindow(win, [boids1, boids2, boids3], wind, scatter=True)
+        # elif keys[py.K_r]:  # reset
+        #     wind = np.zeros([1, 2])
+        #     for boids in [boids1, boids2, boids3]:
+        #         for boid in boids:
+        #             boid.scatter()
+        # else:  # as normal
+        #     redrawGameWindow(win, [boids1, boids2, boids3], wind)
     py.quit()
 
 
