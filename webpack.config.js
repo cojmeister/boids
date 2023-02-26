@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     main: "./src/main.ts",
   },
+  watch: true,
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "app-bundle.js", // <--- Will be compiled to this single file

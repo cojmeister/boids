@@ -7,12 +7,11 @@ export class Boids {
   private continueAnimating = true;
   private readonly denseness = 10;
   private readonly textBackgroundColor = "#333";
-  private readonly mousePosition: Vector;
+  private readonly mousePosition: Vector = new Vector(0, 0);
   private readonly vehicle: Vehicle = new Vehicle(100, 100);
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.ctx = this.canvas.getContext("2d");
-    this.mousePosition = new Vector(0, 0);
 
     this.canvas.addEventListener("mousemove", (e) => {
       this.calculateMouseRelativePositionInCanvas(e);
