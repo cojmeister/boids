@@ -1,3 +1,6 @@
+import Vehicle from "../utils/Vehicle";
+import Vector from "../utils/vector";
+
 class Particle {
   public readonly color: string;
   private flying = false;
@@ -53,6 +56,7 @@ export class CandyText {
   private readonly denseness = 10;
   private readonly textFont = "200px impact";
   private readonly textBackgroundColor = "#333";
+  vehicle: Vehicle;
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.ctx = this.canvas.getContext("2d");
@@ -93,6 +97,7 @@ export class CandyText {
         }
       }
     }
+    this.vehicle = new Vehicle(100, 100);
     this.animate();
   }
 
@@ -116,6 +121,10 @@ export class CandyText {
       p.flyAwayWhenMouseOver(this.mousePosition);
       p.draw(this.ctx);
     });
+    const target = new Vector(this.mousePosition.x, this.mousePosition.y);
+    this.vehicle.seek(target);
+    this.vehicle.update();
+    this.vehicle.draw(this.ctx);
 
     window.requestAnimationFrame(() => this.animate());
   }
