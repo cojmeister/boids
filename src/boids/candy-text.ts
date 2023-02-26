@@ -18,7 +18,7 @@ class Particle {
     }
     ctx.fillStyle = this.color;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI / 4, true);
     ctx.closePath();
     ctx.fill();
   }
@@ -121,10 +121,6 @@ export class CandyText {
       p.flyAwayWhenMouseOver(this.mousePosition);
       p.draw(this.ctx);
     });
-    const target = new Vector(this.mousePosition.x, this.mousePosition.y);
-    this.vehicle.seek(target);
-    this.vehicle.update();
-    this.vehicle.draw(this.ctx);
 
     window.requestAnimationFrame(() => this.animate());
   }

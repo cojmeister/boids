@@ -26,7 +26,7 @@ export default class Vehicle {
     // Limit speed
     this.velocity.limit(this.maxspeed);
     this.position.add(this.velocity);
-    // Reset accelerationelertion to 0 each cycle
+    // Reset acceleration to 0 each cycle
     this.acceleration.mult(0);
   }
 
@@ -49,16 +49,19 @@ export default class Vehicle {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    const theta = this.velocity.heading() + Math.PI / 2;
     const x = this.position.x;
     const y = this.position.y;
-    const theta = this.velocity.heading() + Math.PI / 2;
+    ctx.save();
     ctx.fillStyle = this.color;
+    ctx.translate(x, y);
     ctx.rotate(theta);
     ctx.beginPath();
-    ctx.moveTo(x + 0, y - this.radius * 2);
-    ctx.lineTo(x - this.radius, y + this.radius * 2);
-    ctx.lineTo(x + this.radius, y + this.radius * 2);
-    ctx.closePath();
+    ctx.lineTo(0, -this.radius * 2);
+    ctx.lineTo(-this.radius, this.radius * 2);
+    ctx.lineTo(this.radius, this.radius * 2);
     ctx.fill();
+    ctx.closePath();
+    ctx.restore();
   }
 }

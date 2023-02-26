@@ -205,12 +205,13 @@ export default class Vector {
   div(otherVec: Vector): Vector;
   div(valIn: number | Vector | number[]): Vector {
     if (valIn instanceof Vector) {
-      this.x /= valIn.x;
-      this.y /= valIn.y;
-      this.z /= valIn.z;
+      this.x /= valIn.x || 1;
+      this.y /= valIn.y || 1;
+      this.z /= valIn.z || 1;
     } else if (valIn instanceof Array) {
       if (valIn.filter((el) => el === 0).length > 0) {
         console.error("Division by zero");
+        return this;
       }
       this.x /= valIn[0];
       this.y /= valIn[1];
@@ -220,6 +221,7 @@ export default class Vector {
     } else {
       if (valIn === 0) {
         console.warn(`Dividing vector by 0 - ${this.toString()}`);
+        return this;
       }
       this.x /= valIn;
       this.y /= valIn;
