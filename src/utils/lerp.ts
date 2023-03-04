@@ -14,5 +14,13 @@ export default function lerp(
   minOut: number,
   maxOut: number
 ): number {
-  return minOut + ((x - minIn) * (maxOut - minOut)) / (maxIn - maxOut);
+  if (maxOut <= minOut || maxIn <= minIn) {
+    throw new Error("max value should be bigger than min value");
+  }
+  if (x < minIn || maxIn < x) {
+    throw new Error(
+      "can only interpolate within inputs - otherwise use extrapolation"
+    );
+  }
+  return minOut + ((x - minIn) * (maxOut - minOut)) / (maxIn - minIn);
 }
