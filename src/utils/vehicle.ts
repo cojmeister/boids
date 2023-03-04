@@ -1,3 +1,5 @@
+import lerp from "./lerp";
+import Walls from "./misc/walls";
 import Vector from "./vector";
 
 export default class Vehicle {
@@ -9,6 +11,7 @@ export default class Vehicle {
   maxspeed: number = 4; // Maximum speed
   readonly color =
     "#" + ((Math.random() * 0x949494 + 0xaaaaaa) | 0).toString(16);
+  threshold: number = 100;
 
   constructor(x: number, y: number);
   constructor(position: Vector);
@@ -35,17 +38,41 @@ export default class Vehicle {
     this.acceleration.add(force);
   }
 
-  seek(target: Vector): void {
+  seek(target: Vector, arrive: boolean = true): void {
     let desired: Vector = target.sub(this.position); // A vector pointing from the position to the target
 
+    let maxspeed: number;
+
+    const dist = desired.mag();
+
+    if (dist < this.threshold && arrive) {
+      maxspeed = lerp(dist, 0, this.threshold, 0, this.maxspeed);
+    } else {
+      maxspeed = this.maxspeed;
+    }
     // Scale to maximum speed
-    desired.setMag(this.maxspeed);
+    desired.setMag(maxspeed);
 
     // Steering = Desired minus velocity
     let steer: Vector = desired.sub(this.velocity);
     steer.limit(this.maxforce); // Limit to maximum steering force
 
     this.applyForce(steer);
+  }
+
+  stayWithinWalls(walls: Walls) {
+    if (this.position.x < walls.minX) {
+      this.velocity.x *= -1;
+    }
+    if (this.position.x > walls.maxX) {
+      this.velocity.x *= -1;
+    }
+    if (this.position.y < walls.minY) {
+      this.velocity.y *= -1;
+    }
+    if (this.position.y > walls.maxY) {
+      this.velocity.y *= -1;
+    }
   }
 
   draw(ctx: CanvasRenderingContext2D) {

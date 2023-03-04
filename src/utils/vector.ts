@@ -1,12 +1,26 @@
+export interface Position {
+  x: number;
+  y: number;
+}
+
 export default class Vector {
   x: number;
   y: number;
   z: number;
 
-  constructor(x: number = 0, y: number = 0, z: number = 0) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+  constructor(pos: Position);
+  constructor(x: number, y: number, z: number);
+  constructor(x: number, y: number, z?: number);
+  constructor(x: number | Position = 0, y: number = 0, z: number = 0) {
+    if (typeof x === "number") {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+    } else {
+      this.x = x.x;
+      this.y = x.y;
+      this.z = 0;
+    }
   }
 
   toString(): string {
