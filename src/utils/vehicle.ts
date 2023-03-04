@@ -1,5 +1,4 @@
 import lerp from "./lerp";
-import Walls from "./misc/walls";
 import Vector from "./vector";
 
 export default class Vehicle {
@@ -60,14 +59,14 @@ export default class Vehicle {
     this.applyForce(steer);
   }
 
-  stayWithinWalls(walls: Walls) {
-    if (this.position.x < walls.minX) {
+  stayWithinWalls(walls: { maxX: number; maxY: number }) {
+    if (this.position.x < 0) {
       this.velocity.x *= -1;
     }
     if (this.position.x > walls.maxX) {
       this.velocity.x *= -1;
     }
-    if (this.position.y < walls.minY) {
+    if (this.position.y < 0) {
       this.velocity.y *= -1;
     }
     if (this.position.y > walls.maxY) {

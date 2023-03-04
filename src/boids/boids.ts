@@ -1,6 +1,5 @@
 import Vehicle from "../utils/vehicle";
 import Vector, { Position } from "../utils/vector";
-import Walls from "../utils/misc/walls";
 
 export class Boids {
   private readonly ctx: CanvasRenderingContext2D;
