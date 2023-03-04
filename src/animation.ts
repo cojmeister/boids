@@ -1,14 +1,14 @@
-import Vehicle from "../utils/vehicle";
-import Vector, { Position } from "../utils/vector";
+import Vehicle from "./utils/vehicle";
+import Vector, { Position } from "./utils/vector";
+import { Boid } from "./boids/boid";
 
-export class Boids {
+export class Animation {
   private readonly ctx: CanvasRenderingContext2D;
   private raf: number;
   private continueAnimating = true;
-  private readonly denseness = 10;
   private readonly textBackgroundColor = "#333";
   private readonly mousePosition: Position = { x: 0, y: 0 };
-  private readonly vehicle: Vehicle = new Vehicle(100, 100);
+  private readonly boid: Boid = new Boid(1000, 500);
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.ctx = this.canvas.getContext("2d");
@@ -45,14 +45,11 @@ export class Boids {
 
     const position = new Vector(this.mousePosition);
     this.drawBackground();
-    this.vehicle.seek(position);
-    this.vehicle.update();
-    this.vehicle.draw(this.ctx);
+    this.boid.animate(position, this.ctx);
     window.requestAnimationFrame(() => this.animate());
   }
 
   private calculateMouseRelativePositionInCanvas(e: MouseEvent) {
-    // Note: I have handled scroll effect
     this.mousePosition.x =
       e.clientX +
       (document.documentElement.scrollLeft || document.body.scrollLeft) -

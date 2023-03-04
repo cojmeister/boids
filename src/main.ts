@@ -1,8 +1,8 @@
-import { Boids } from "./boids/boids";
+import { Animation } from "./animation";
 
 function main() {
   const canvas5 = <HTMLCanvasElement>document.getElementById("boids");
-  const boids = new Boids(canvas5);
+  const boids = new Animation(canvas5);
   boids.draw();
 }
 

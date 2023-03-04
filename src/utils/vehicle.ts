@@ -37,43 +37,6 @@ export default class Vehicle {
     this.acceleration.add(force);
   }
 
-  seek(target: Vector, arrive: boolean = true): void {
-    let desired: Vector = target.sub(this.position); // A vector pointing from the position to the target
-
-    let maxspeed: number;
-
-    const dist = desired.mag();
-
-    if (dist < this.threshold && arrive) {
-      maxspeed = lerp(dist, 0, this.threshold, 0, this.maxspeed);
-    } else {
-      maxspeed = this.maxspeed;
-    }
-    // Scale to maximum speed
-    desired.setMag(maxspeed);
-
-    // Steering = Desired minus velocity
-    let steer: Vector = desired.sub(this.velocity);
-    steer.limit(this.maxforce); // Limit to maximum steering force
-
-    this.applyForce(steer);
-  }
-
-  stayWithinWalls(walls: { maxX: number; maxY: number }) {
-    if (this.position.x < 0) {
-      this.velocity.x *= -1;
-    }
-    if (this.position.x > walls.maxX) {
-      this.velocity.x *= -1;
-    }
-    if (this.position.y < 0) {
-      this.velocity.y *= -1;
-    }
-    if (this.position.y > walls.maxY) {
-      this.velocity.y *= -1;
-    }
-  }
-
   draw(ctx: CanvasRenderingContext2D) {
     const theta = this.velocity.heading() + Math.PI / 2;
     const x = this.position.x;
