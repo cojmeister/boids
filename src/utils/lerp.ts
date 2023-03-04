@@ -1,5 +1,3 @@
-import { describe, it } from "node:test";
-
 /**
  * Linear interpolation of x between minIn and maxIn will return value between minOut and maxOut
  * @param {number}x Input value
