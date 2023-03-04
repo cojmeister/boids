@@ -24,7 +24,7 @@ export default class Vector {
   }
 
   toString(): string {
-    return `p5.Vector Object : [${this.x}, ${this.y}, ${this.z}]`;
+    return `Vector Object : [${this.x}, ${this.y}, ${this.z}]`;
   }
 
   set(x?: number, y?: number, z?: number): Vector {
