@@ -3,19 +3,36 @@ export interface Position {
   y: number;
 }
 
+export function isPosition(obj: any): obj is Position {
+  return "x" in obj && "y" in obj;
+}
+
 export default class Vector {
   x: number;
   y: number;
   z: number;
 
+  constructor(arr: number[]);
   constructor(pos: Position);
   constructor(x: number, y: number, z: number);
   constructor(x: number, y: number, z?: number);
-  constructor(x: number | Position = 0, y: number = 0, z: number = 0) {
+  constructor(
+    x: number | number[] | Position = 0,
+    y: number = 0,
+    z: number = 0
+  ) {
     if (typeof x === "number") {
       this.x = x;
       this.y = y;
       this.z = z;
+    } else if (Array.isArray(x)) {
+      this.x = <number>x[0];
+      this.y = <number>x[1];
+      if (x.length > 2) {
+        this.z = x[2];
+      } else {
+        this.z = 0;
+      }
     } else {
       this.x = x.x;
       this.y = x.y;
@@ -224,7 +241,7 @@ export default class Vector {
       this.z /= valIn.z || 1;
     } else if (valIn instanceof Array) {
       if (valIn.filter((el) => el === 0).length > 0) {
-        console.error("Division by zero");
+        console.warn(`Dividing vector by 0 - ${this.toString()}`);
         return this;
       }
       this.x /= valIn[0];
